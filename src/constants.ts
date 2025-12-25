@@ -3,7 +3,13 @@ import { StartHandler } from './handlers/start-handler';
 import { Handler } from './interfaces/handler';
 import { Config, ConfigSchema } from './schemas/config';
 import { Screen } from './ui/screen';
+import { readSplitLines } from './utils/helpers';
 import { makeIfIsnt } from './utils/loaders';
+
+// Simple
+
+export const MAX_PROXIES_BATCH = 35;
+export const MAX_MAILS_BATCH = 6;
 
 // Structures
 
@@ -53,3 +59,7 @@ export const HANDLERS: Record<string, Handler> = {
   start: new StartHandler(),
   settings: new SettingsHandler(),
 };
+
+// Other
+
+export const PROXIES = readSplitLines(PATHS.proxies);

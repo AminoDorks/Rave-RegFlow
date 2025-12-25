@@ -7,8 +7,16 @@
     "enterTorPort": "Enter Tor port:",
     "enterTorPassword": "Enter Tor password:"
   },
-  "logs": {},
-  "errors": {},
+  "logs": {
+    "cacheUpdated": "Cache updated with %s accounts",
+    "torConnected": "Tor connected",
+    "newNym": "New Nym created",
+    "proxyConnected": "Proxy connected"
+  },
+  "errors": {
+    "torConnectionFailed": "Failed to connect to Tor",
+    "proxyConnectionFailed": "Failed to connect to proxy"
+  },
   "choices": {
     "main": [
       {
