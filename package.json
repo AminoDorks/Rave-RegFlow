@@ -7,6 +7,11 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc && cd dist/ && node index.js"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^8.1.0",
+    "zod": "^4.2.1"
   }
 }
