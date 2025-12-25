@@ -1,6 +1,7 @@
-import { COLORS, PATHS } from '../constants';
+import { COLORS, HANDLERS, PATHS } from '../constants';
 import { load } from '../utils/loaders';
-import { Locale, LocaleSchema } from './locale';
+import { Locale, LocaleSchema } from '../schemas/locale';
+import { buildSelect } from './builders';
 
 export const colorize = (text: string): string =>
   `${COLORS.red}${text}${COLORS.reset}`;
@@ -38,5 +39,19 @@ export class Screen {
   public displayLogo = () => {
     console.clear();
     console.log(colorize(Buffer.from(this.__locale.logo, 'base64').toString()));
+    console.log(this.__locale.logoCredit);
+  };
+
+  public run = async () => {
+    while (true) {
+      this.displayLogo();
+
+      await HANDLERS[
+        await buildSelect(
+          this.__locale.enters.chooseAction,
+          this.__locale.choices.main,
+        )
+      ].handle();
+    }
   };
 }

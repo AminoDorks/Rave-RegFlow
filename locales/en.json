@@ -1,3 +1,50 @@
 {
-  "logo": "ICAgX18gICAgICAgICAgICAgICAgICAgICBfXyAgICAgICAgICAgICAgX19fIF8gICAgICAgICAgICAgICAKICAvX19cIF9fIF9fXyAgIF9fX19fICAgIC9fX1wgX19fICBfXyBfICAvIF9fXCB8IF9fX19fICAgICAgX18KIC8gXC8vLyBfYCBcIFwgLyAvIF8gXCAgLyBcLy8vIF8gXC8gX2AgfC8gX1wgfCB8LyBfIFwgXCAvXCAvIC8KLyBfICBcIChffCB8XCBWIC8gIF9fLyAvIF8gIFwgIF9fLyAoX3wgLyAvICAgfCB8IChfKSBcIFYgIFYgLyAKXC8gXF8vXF9fLF98IFxfLyBcX19ffCBcLyBcXy9cX19ffFxfXywgXC8gICAgfF98XF9fXy8gXF8vXF8vICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHxfX18vICAgICAgICAgICAgICAgICAgICAgICA="
+  "logo": "ICAgX18gICAgICAgICAgICAgICAgICAgICBfXyAgICAgICAgICAgICAgX19fIF8gICAgICAgICAgICAgICAKICAvX19cIF9fIF9fXyAgIF9fX19fICAgIC9fX1wgX19fICBfXyBfICAvIF9fXCB8IF9fX19fICAgICAgX18KIC8gXC8vLyBfYCBcIFwgLyAvIF8gXCAgLyBcLy8vIF8gXC8gX2AgfC8gX1wgfCB8LyBfIFwgXCAvXCAvIC8KLyBfICBcIChffCB8XCBWIC8gIF9fLyAvIF8gIFwgIF9fLyAoX3wgLyAvICAgfCB8IChfKSBcIFYgIFYgLyAKXC8gXF8vXF9fLF98IFxfLyBcX19ffCBcLyBcXy9cX19ffFxfXywgXC8gICAgfF98XF9fXy8gXF8vXF8vICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHxfX18vICAgICAgICAgICAgICAgICAgICAgICA=",
+  "logoCredit": "       Script by celt\n",
+  "enters": {
+    "chooseAction": "Choose an action:",
+    "chooseLanguage": "Choose a language:",
+    "enterTorPort": "Enter Tor port:",
+    "enterTorPassword": "Enter Tor password:"
+  },
+  "logs": {},
+  "errors": {},
+  "choices": {
+    "main": [
+      {
+        "name": "Start the autoreg",
+        "description": "Start the autoregistration process",
+        "value": "start"
+      },
+      {
+        "name": "Settings",
+        "description": "Configure the autoregistration settings",
+        "value": "settings"
+      }
+    ],
+    "settings": [
+      {
+        "name": "Language",
+        "description": "Select the language",
+        "value": "language"
+      },
+      {
+        "name": "Tor",
+        "description": "Configure the Tor settings",
+        "value": "tor"
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "description": "Select English language",
+        "value": "en"
+      },
+      {
+        "name": "Russian",
+        "description": "Select Russian language",
+        "value": "ru"
+      }
+    ]
+  }
 }

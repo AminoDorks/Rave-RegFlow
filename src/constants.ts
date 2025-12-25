@@ -1,4 +1,7 @@
-import { Config, ConfigSchema } from './ui/config';
+import { SettingsHandler } from './handlers/settings-handler';
+import { StartHandler } from './handlers/start-handler';
+import { Handler } from './interfaces/handler';
+import { Config, ConfigSchema } from './schemas/config';
 import { Screen } from './ui/screen';
 import { makeIfIsnt } from './utils/loaders';
 
@@ -45,3 +48,8 @@ export let CONFIG = makeIfIsnt<Config>(
 );
 
 export const SCREEN = new Screen(CONFIG.locale);
+
+export const HANDLERS: Record<string, Handler> = {
+  start: new StartHandler(),
+  settings: new SettingsHandler(),
+};

@@ -1,5 +1,5 @@
 import { SCREEN } from './constants';
 
 (async () => {
-  SCREEN.displayLogo();
+  await SCREEN.run();
 })();
