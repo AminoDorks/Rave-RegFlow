@@ -9,14 +9,17 @@ import { makeIfIsnt } from './utils/loaders';
 // Simple
 
 export const MAX_PROXIES_BATCH = 35;
-export const MAX_MAILS_BATCH = 6;
+export const MAX_MAILS_BATCH = 1;
+export const MAX_REGISTER_BATCH = 10;
+export const MAIL_ITERATIONS = 10;
+export const RATE_LIMIT_PER_IP = 4;
 
 // Structures
 
 export const PATHS = {
   config: '../config.json',
   cache: '../cache.json',
-  proxies: '../proxies.json',
+  proxies: '../proxies.txt',
   locales: '../locales/%s.json',
 };
 

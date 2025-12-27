@@ -8,14 +8,19 @@
     "enterTorPassword": "Введите пароль Tor:"
   },
   "logs": {
-    "cacheUpdated": "Кэш updated with %s accounts",
+    "cacheUpdated": "Кэш обновлен с %s аккаунтами",
     "torConnected": "Tor подключен",
+    "mailCreated": "Почта создана",
     "newNym": "Новый Nym создан",
-    "proxyConnected": "Прокси подключен"
+    "proxyConnected": "Прокси подключен",
+    "proxiesConnected": "Всего прокси подключено: %s",
+    "accountCreated": "Аккаунт создан"
   },
   "errors": {
     "torConnectionFailed": "Ошибка подключения к Tor",
-    "proxyConnectionFailed": "Ошибка подключения к прокси"
+    "mailCreationFailed": "Ошибка создания почты",
+    "proxyConnectionFailed": "Ошибка подключения к прокси",
+    "accountCreationFailed": "Ошибка создания аккаунта"
   },
   "choices": {
     "main": [

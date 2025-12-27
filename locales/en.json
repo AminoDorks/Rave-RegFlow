@@ -10,11 +10,14 @@
   "logs": {
     "cacheUpdated": "Cache updated with %s accounts",
     "torConnected": "Tor connected",
+    "mailCreated": "Mail created",
     "newNym": "New Nym created",
-    "proxyConnected": "Proxy connected"
+    "proxyConnected": "Proxy connected",
+    "proxiesConnected": "Total proxies connected: %s"
   },
   "errors": {
     "torConnectionFailed": "Failed to connect to Tor",
+    "mailCreationFailed": "Failed to create mail",
     "proxyConnectionFailed": "Failed to connect to proxy"
   },
   "choices": {

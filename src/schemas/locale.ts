@@ -13,12 +13,17 @@ export const LocaleSchema = z.object({
   logs: z.object({
     cacheUpdated: z.string(),
     torConnected: z.string(),
+    mailCreated: z.string(),
     newNym: z.string(),
     proxyConnected: z.string(),
+    proxiesConnected: z.string(),
+    accountCreated: z.string(),
   }),
   errors: z.object({
     torConnectionFailed: z.string(),
+    mailCreationFailed: z.string(),
     proxyConnectionFailed: z.string(),
+    accountCreationFailed: z.string(),
   }),
   choices: z.object({
     main: z.array(ChoiceSchema),

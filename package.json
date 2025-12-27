@@ -11,6 +11,7 @@
     "start": "tsc && cd dist/ && node index.js"
   },
   "dependencies": {
+    "@cemalgnlts/mailjs": "^3.1.1",
     "@inquirer/prompts": "^8.1.0",
     "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
