@@ -1,7 +1,6 @@
 import { APIException, generateToken, Rave } from 'ravejs';
 
 import { Handler } from '../interfaces/handler';
-import { TorProxy } from '../schemas/proxy';
 import { display } from '../ui/screen';
 import {
   delay,
@@ -17,39 +16,20 @@ import {
   MAX_PROXIES_BATCH,
   PROXIES,
   SCREEN,
-  RATE_LIMIT_PER_IP,
   MAIL_ITERATIONS,
 } from '../constants';
 import initCache, { cacheSet } from '../utils/cache';
 import { RegisterContext } from '../schemas/register-context';
 
 export class StartHandler implements Handler {
-  private __proxies: TorProxy[] = [];
+  private __proxies: string[] = [];
   private __contexts: RegisterContext[] = [];
 
   private __tor?: Tor;
 
-  private __clear = (): void => {
-    this.__proxies = [];
-  };
-
-  private __getProxySafe = async (): Promise<TorProxy | undefined> => {
-    const proxy =
-      this.__proxies[Math.floor(Math.random() * this.__proxies.length)];
-    if (!proxy) return;
-
-    if (proxy.timesUsed >= RATE_LIMIT_PER_IP) {
-      this.__proxies.splice(this.__proxies.indexOf(proxy), 1);
-      return;
-    }
-
-    proxy.timesUsed++;
-    return proxy;
-  };
-
   private __registerTask = async (context: RegisterContext) => {
-    const torProxy = await this.__getProxySafe();
-    if (!torProxy) {
+    const proxy = this.__proxies.shift();
+    if (!proxy) {
       display(SCREEN.locale.logs.noProxyAvailable, [context.email]);
       return;
     }
@@ -58,7 +38,7 @@ export class StartHandler implements Handler {
       context.idToken,
       context.email,
     );
-    context.instance.proxy = torProxy.proxy;
+    context.instance.proxy = proxy;
 
     try {
       await context.instance.auth.mojoLogin(
@@ -78,7 +58,6 @@ export class StartHandler implements Handler {
       });
       display(SCREEN.locale.logs.accountCreated, [context.email]);
     } catch (error) {
-      this.__proxies.splice(this.__proxies.indexOf(torProxy), 1);
       display(
         `${SCREEN.locale.errors.accountCreationFailed}: ${(error as unknown as APIException).message}`,
         [context.email],
@@ -123,7 +102,7 @@ export class StartHandler implements Handler {
 
           this.__contexts.push({
             email: mail,
-            idToken: '',
+            idToken: state.oauth!.idToken,
             deviceId: generateToken(),
             instance: rave,
           });
@@ -139,7 +118,7 @@ export class StartHandler implements Handler {
   };
 
   private __proxySetup = async (): Promise<void> => {
-    this.__clear();
+    this.__proxies = [];
 
     await this.__tor?.signalNewnym();
     display(SCREEN.locale.logs.newNym);
@@ -151,7 +130,7 @@ export class StartHandler implements Handler {
         rave.proxy = proxy;
 
         if (await rave.proxyIsAlive()) {
-          this.__proxies.push({ proxy, timesUsed: 0 });
+          this.__proxies.push(proxy);
           rave.offProxy();
           display(SCREEN.locale.logs.proxyConnected, [proxy]);
 
@@ -193,5 +172,6 @@ export class StartHandler implements Handler {
     );
 
     await this.__registerSetup();
+    this.__contexts = [];
   }
 }
