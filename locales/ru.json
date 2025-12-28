@@ -15,7 +15,8 @@
     "proxyConnected": "Прокси подключен",
     "proxiesConnected": "Всего прокси подключено: %s",
     "accountCreated": "Аккаунт создан",
-    "taskRestarted": "Прокси истекло время ожидания. Задача перезапущена"
+    "taskRestarted": "Прокси истекло время ожидания. Задача перезапущена",
+    "noProxyAvailable": "Нет доступных прокси"
   },
   "errors": {
     "torConnectionFailed": "Ошибка подключения к Tor",

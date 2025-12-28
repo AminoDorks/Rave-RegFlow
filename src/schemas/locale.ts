@@ -19,6 +19,7 @@ export const LocaleSchema = z.object({
     proxiesConnected: z.string(),
     accountCreated: z.string(),
     taskRestarted: z.string(),
+    noProxyAvailable: z.string(),
   }),
   errors: z.object({
     torConnectionFailed: z.string(),

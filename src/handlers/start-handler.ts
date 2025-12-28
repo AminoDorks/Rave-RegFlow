@@ -18,6 +18,7 @@ import {
   PROXIES,
   SCREEN,
   RATE_LIMIT_PER_IP,
+  MAIL_ITERATIONS,
 } from '../constants';
 import initCache, { cacheSet } from '../utils/cache';
 import { RegisterContext } from '../schemas/register-context';
@@ -48,7 +49,10 @@ export class StartHandler implements Handler {
 
   private __registerTask = async (context: RegisterContext) => {
     const torProxy = await this.__getProxySafe();
-    if (!torProxy) return;
+    if (!torProxy) {
+      display(SCREEN.locale.logs.noProxyAvailable, [context.email]);
+      return;
+    }
 
     const credentials = await context.instance.auth.parseUserCredentials(
       context.idToken,
@@ -75,12 +79,6 @@ export class StartHandler implements Handler {
       display(SCREEN.locale.logs.accountCreated, [context.email]);
     } catch (error) {
       this.__proxies.splice(this.__proxies.indexOf(torProxy), 1);
-      if (!(error instanceof APIException)) {
-        context.instance.offProxy();
-        display(SCREEN.locale.logs.taskRestarted, [context.email]);
-        await this.__registerTask(context);
-      }
-
       display(
         `${SCREEN.locale.errors.accountCreationFailed}: ${(error as unknown as APIException).message}`,
         [context.email],
@@ -108,7 +106,7 @@ export class StartHandler implements Handler {
 
   private __mailSetup = async (): Promise<void> => {
     await pool<number>(
-      Array.from({ length: this.__proxies.length }, (_, index) => index + 1),
+      Array.from({ length: MAIL_ITERATIONS }, (_, index) => index + 1),
       async (taskIter: number) => {
         try {
           const rave = new Rave();
@@ -125,7 +123,7 @@ export class StartHandler implements Handler {
 
           this.__contexts.push({
             email: mail,
-            idToken: state.oauth!.idToken,
+            idToken: '',
             deviceId: generateToken(),
             instance: rave,
           });
@@ -170,7 +168,7 @@ export class StartHandler implements Handler {
     await pool<RegisterContext>(
       this.__contexts,
       this.__registerTask,
-      this.__proxies.length,
+      this.__contexts.length,
     );
   };
 
@@ -179,8 +177,12 @@ export class StartHandler implements Handler {
     initCache();
     if (!(await this.__torSetup())) return;
 
-    await this.__proxySetup();
     await this.__mailSetup();
+
+    while (true) {
+      await this.__proxySetup();
+      if (this.__proxies.length >= this.__contexts.length) break;
+    }
 
     SCREEN.displayLogo();
     display(

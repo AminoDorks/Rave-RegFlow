@@ -10,6 +10,7 @@ import { makeIfIsnt } from './utils/loaders';
 
 export const MAX_PROXIES_BATCH = 35;
 export const MAX_MAILS_BATCH = 70;
+export const MAIL_ITERATIONS = 35;
 export const RATE_LIMIT_PER_IP = 2;
 
 // Structures

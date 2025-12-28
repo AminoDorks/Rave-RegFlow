@@ -14,7 +14,8 @@
     "newNym": "New Nym created",
     "proxyConnected": "Proxy connected",
     "proxiesConnected": "Total proxies connected: %s",
-    "taskRestarted": "Proxy timeout. Task restarted"
+    "taskRestarted": "Proxy timeout. Task restarted",
+    "noProxyAvailable": "No available proxies"
   },
   "errors": {
     "torConnectionFailed": "Failed to connect to Tor",
