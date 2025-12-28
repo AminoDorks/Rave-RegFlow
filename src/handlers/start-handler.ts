@@ -1,24 +1,22 @@
-import Mailjs from '@cemalgnlts/mailjs';
-import { generateToken, Rave } from 'ravejs';
+import { APIException, generateToken, Rave } from 'ravejs';
 
 import { Handler } from '../interfaces/handler';
 import { TorProxy } from '../schemas/proxy';
 import { display } from '../ui/screen';
 import {
   delay,
+  generateMailName,
   getVerificationLink,
   sendDelayedVerify,
 } from '../utils/helpers';
 import { pool } from '../utils/tasks';
 import { Tor } from 'tor-control-ts';
 import {
-  MAIL_ITERATIONS,
   CONFIG,
   MAX_MAILS_BATCH,
   MAX_PROXIES_BATCH,
   PROXIES,
   SCREEN,
-  MAX_REGISTER_BATCH,
   RATE_LIMIT_PER_IP,
 } from '../constants';
 import initCache, { cacheSet } from '../utils/cache';
@@ -27,13 +25,11 @@ import { RegisterContext } from '../schemas/register-context';
 export class StartHandler implements Handler {
   private __proxies: TorProxy[] = [];
   private __contexts: RegisterContext[] = [];
-  private __createdAccounts: number = 0;
 
   private __tor?: Tor;
 
   private __clear = (): void => {
     this.__proxies = [];
-    this.__createdAccounts = 0;
   };
 
   private __getProxySafe = async (): Promise<TorProxy | undefined> => {
@@ -48,6 +44,48 @@ export class StartHandler implements Handler {
 
     proxy.timesUsed++;
     return proxy;
+  };
+
+  private __registerTask = async (context: RegisterContext) => {
+    const torProxy = await this.__getProxySafe();
+    if (!torProxy) return;
+
+    const credentials = await context.instance.auth.parseUserCredentials(
+      context.idToken,
+      context.email,
+    );
+    context.instance.proxy = torProxy.proxy;
+
+    try {
+      await context.instance.auth.mojoLogin(
+        context.email,
+        credentials.objectId,
+        credentials.sessionToken,
+        'sdfldslfdf',
+        context.deviceId,
+      );
+      cacheSet({
+        email: context.email,
+        token: credentials.sessionToken.slice(
+          2,
+          credentials.sessionToken.length,
+        ),
+        deviceId: context.deviceId,
+      });
+      display(SCREEN.locale.logs.accountCreated, [context.email]);
+    } catch (error) {
+      this.__proxies.splice(this.__proxies.indexOf(torProxy), 1);
+      if (!(error instanceof APIException)) {
+        context.instance.offProxy();
+        display(SCREEN.locale.logs.taskRestarted, [context.email]);
+        await this.__registerTask(context);
+      }
+
+      display(
+        `${SCREEN.locale.errors.accountCreationFailed}: ${(error as unknown as APIException).message}`,
+        [context.email],
+      );
+    }
   };
 
   private __torSetup = async (): Promise<Tor | undefined> => {
@@ -70,16 +108,12 @@ export class StartHandler implements Handler {
 
   private __mailSetup = async (): Promise<void> => {
     await pool<number>(
-      Array.from({ length: MAIL_ITERATIONS }, (_, index) => index + 1),
+      Array.from({ length: this.__proxies.length }, (_, index) => index + 1),
       async (taskIter: number) => {
         try {
-          const mail = new Mailjs();
           const rave = new Rave();
-
-          const account = await mail.createOneAccount();
-          const stateData = await rave.auth.sendMagicLink(
-            account.data.username,
-          );
+          const mail = generateMailName();
+          const stateData = await rave.auth.sendMagicLink(mail);
           const verificationLink = await getVerificationLink(mail);
 
           if (!verificationLink) return;
@@ -90,12 +124,12 @@ export class StartHandler implements Handler {
           const state = await rave.auth.checkRegisterState(stateData.stateId);
 
           this.__contexts.push({
-            email: account.data.username,
+            email: mail,
             idToken: state.oauth!.idToken,
             deviceId: generateToken(),
             instance: rave,
           });
-          display(SCREEN.locale.logs.mailCreated, [account.data.username]);
+          display(SCREEN.locale.logs.mailCreated, [taskIter.toString(), mail]);
         } catch {
           display(SCREEN.locale.errors.mailCreationFailed, [
             taskIter.toString(),
@@ -135,39 +169,8 @@ export class StartHandler implements Handler {
   private __registerSetup = async (): Promise<void> => {
     await pool<RegisterContext>(
       this.__contexts,
-      async (context: RegisterContext) => {
-        const torProxy = await this.__getProxySafe();
-        if (!torProxy) return;
-
-        const credentials = await context.instance.auth.parseUserCredentials(
-          context.idToken,
-          context.email,
-        );
-        context.instance.proxy = torProxy.proxy;
-
-        try {
-          await context.instance.auth.mojoLogin(
-            context.email,
-            credentials.objectId,
-            credentials.sessionToken,
-            'sdfldslfdf',
-            context.deviceId,
-          );
-          cacheSet({
-            email: context.email,
-            token: credentials.sessionToken.slice(
-              2,
-              credentials.sessionToken.length,
-            ),
-            deviceId: context.deviceId,
-          });
-          display(SCREEN.locale.logs.accountCreated, [context.email]);
-        } catch {
-          this.__proxies.splice(this.__proxies.indexOf(torProxy), 1);
-          display(SCREEN.locale.errors.accountCreationFailed, [context.email]);
-        }
-      },
-      MAX_REGISTER_BATCH,
+      this.__registerTask,
+      this.__proxies.length,
     );
   };
 
@@ -176,8 +179,8 @@ export class StartHandler implements Handler {
     initCache();
     if (!(await this.__torSetup())) return;
 
-    await this.__mailSetup();
     await this.__proxySetup();
+    await this.__mailSetup();
 
     SCREEN.displayLogo();
     display(

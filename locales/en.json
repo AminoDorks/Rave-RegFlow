@@ -13,7 +13,8 @@
     "mailCreated": "Mail created",
     "newNym": "New Nym created",
     "proxyConnected": "Proxy connected",
-    "proxiesConnected": "Total proxies connected: %s"
+    "proxiesConnected": "Total proxies connected: %s",
+    "taskRestarted": "Proxy timeout. Task restarted"
   },
   "errors": {
     "torConnectionFailed": "Failed to connect to Tor",

@@ -9,12 +9,15 @@ import { makeIfIsnt } from './utils/loaders';
 // Simple
 
 export const MAX_PROXIES_BATCH = 35;
-export const MAX_MAILS_BATCH = 1;
-export const MAX_REGISTER_BATCH = 10;
-export const MAIL_ITERATIONS = 10;
-export const RATE_LIMIT_PER_IP = 4;
+export const MAX_MAILS_BATCH = 70;
+export const RATE_LIMIT_PER_IP = 2;
 
 // Structures
+
+export const MAIL_URLS = {
+  nicemail: 'https://nicemail.cc/ru',
+  api: 'https://web.nicemail.cc/api/v1',
+};
 
 export const PATHS = {
   config: '../config.json',
