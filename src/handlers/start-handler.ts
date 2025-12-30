@@ -76,30 +76,31 @@ export class StartHandler implements Handler {
     proxy: string,
   ): Promise<void> => {
     const mail = this.__nicemail.getMail();
-    const { stateId } = await rave.auth.sendMagicLink(mail);
-    display(SCREEN.locale.logs.mailCreated, [mail]);
-
-    const link = await getVerificationLink(this.__nicemail, mail);
-
-    if (!link) {
-      display(SCREEN.locale.errors.accountCreationFailed, [mail]);
-      return;
-    }
-
-    sendDelayedVerify(link);
-    await delay(6);
-    display(SCREEN.locale.logs.verifyChainPassed, [mail]);
-
-    const state = await rave.auth.checkRegisterState(stateId);
-    const credentials = await rave.auth.parseUserCredentials(
-      state.oauth!.idToken,
-      mail,
-    );
-    const deviceId = generateToken();
-
-    rave.proxy = proxy;
 
     try {
+      const { stateId } = await rave.auth.sendMagicLink(mail);
+      display(SCREEN.locale.logs.mailCreated, [mail]);
+
+      const link = await getVerificationLink(this.__nicemail, mail);
+
+      if (!link) {
+        display(SCREEN.locale.errors.accountCreationFailed, [mail]);
+        return;
+      }
+
+      sendDelayedVerify(link);
+      await delay(6);
+      display(SCREEN.locale.logs.verifyChainPassed, [mail]);
+
+      const state = await rave.auth.checkRegisterState(stateId);
+      const credentials = await rave.auth.parseUserCredentials(
+        state.oauth!.idToken,
+        mail,
+      );
+      const deviceId = generateToken();
+
+      rave.proxy = proxy;
+
       await rave.auth.mojoLogin(
         mail,
         credentials.objectId,
