@@ -5,7 +5,8 @@
     "chooseAction": "Выберите действие:",
     "chooseLanguage": "Выберите язык:",
     "enterTorPort": "Введите порт Tor:",
-    "enterTorPassword": "Введите пароль Tor:"
+    "enterTorPassword": "Введите пароль Tor:",
+    "enterAccountsNickname": "Введите никнейм аккаунтов:"
   },
   "logs": {
     "cacheUpdated": "Кэш обновлен с %s аккаунтами",
@@ -14,6 +15,7 @@
     "newNym": "Новый Nym создан",
     "proxyConnected": "Прокси подключен",
     "proxiesConnected": "Всего прокси подключено: %s",
+    "verifyChainPassed": "Цепочка верификации пройдена",
     "accountCreated": "Аккаунт создан",
     "taskRestarted": "Прокси истекло время ожидания. Задача перезапущена",
     "noProxyAvailable": "Нет доступных прокси"

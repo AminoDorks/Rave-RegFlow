@@ -1,74 +1,36 @@
-import { APIException, generateToken, Rave } from 'ravejs';
+import { generateToken, Rave } from 'ravejs';
+import { NiceMail } from 'nicemail-ts';
+import { Tor } from 'tor-control-ts';
 
 import { Handler } from '../interfaces/handler';
 import { display } from '../ui/screen';
-import {
-  delay,
-  generateMailName,
-  getVerificationLink,
-  sendDelayedVerify,
-} from '../utils/helpers';
 import { pool } from '../utils/tasks';
-import { Tor } from 'tor-control-ts';
+import initCache, { cacheSet } from '../utils/cache';
+import { buildInput } from '../ui/builders';
 import {
   CONFIG,
-  MAX_MAILS_BATCH,
   MAX_PROXIES_BATCH,
   PROXIES,
   SCREEN,
-  MAIL_ITERATIONS,
+  LOCALHOST,
 } from '../constants';
-import initCache, { cacheSet } from '../utils/cache';
-import { RegisterContext } from '../schemas/register-context';
+import {
+  delay,
+  getVerificationLink,
+  sendDelayedVerify,
+} from '../utils/helpers';
 
 export class StartHandler implements Handler {
+  private __nicemail: NiceMail = new NiceMail();
   private __proxies: string[] = [];
-  private __contexts: RegisterContext[] = [];
 
+  private __nickname?: string;
   private __tor?: Tor;
-
-  private __registerTask = async (context: RegisterContext) => {
-    const proxy = this.__proxies.shift();
-    if (!proxy) {
-      display(SCREEN.locale.logs.noProxyAvailable, [context.email]);
-      return;
-    }
-
-    const credentials = await context.instance.auth.parseUserCredentials(
-      context.idToken,
-      context.email,
-    );
-    context.instance.proxy = proxy;
-
-    try {
-      await context.instance.auth.mojoLogin(
-        context.email,
-        credentials.objectId,
-        credentials.sessionToken,
-        'sdfldslfdf',
-        context.deviceId,
-      );
-      cacheSet({
-        email: context.email,
-        token: credentials.sessionToken.slice(
-          2,
-          credentials.sessionToken.length,
-        ),
-        deviceId: context.deviceId,
-      });
-      display(SCREEN.locale.logs.accountCreated, [context.email]);
-    } catch (error) {
-      display(
-        `${SCREEN.locale.errors.accountCreationFailed}: ${(error as unknown as APIException).message}`,
-        [context.email],
-      );
-    }
-  };
 
   private __torSetup = async (): Promise<Tor | undefined> => {
     try {
       this.__tor = new Tor({
-        host: '127.0.0.1',
+        host: LOCALHOST,
         port: CONFIG.torControlPort,
         password: CONFIG.torControlPassword,
       });
@@ -81,40 +43,6 @@ export class StartHandler implements Handler {
       await delay(1);
       return;
     }
-  };
-
-  private __mailSetup = async (): Promise<void> => {
-    await pool<number>(
-      Array.from({ length: MAIL_ITERATIONS }, (_, index) => index + 1),
-      async (taskIter: number) => {
-        try {
-          const rave = new Rave();
-          const mail = generateMailName();
-          const stateData = await rave.auth.sendMagicLink(mail);
-          const verificationLink = await getVerificationLink(mail);
-
-          if (!verificationLink) return;
-
-          sendDelayedVerify(verificationLink);
-          await delay(6);
-
-          const state = await rave.auth.checkRegisterState(stateData.stateId);
-
-          this.__contexts.push({
-            email: mail,
-            idToken: state.oauth!.idToken,
-            deviceId: generateToken(),
-            instance: rave,
-          });
-          display(SCREEN.locale.logs.mailCreated, [taskIter.toString(), mail]);
-        } catch {
-          display(SCREEN.locale.errors.mailCreationFailed, [
-            taskIter.toString(),
-          ]);
-        }
-      },
-      MAX_MAILS_BATCH,
-    );
   };
 
   private __proxySetup = async (): Promise<void> => {
@@ -143,35 +71,87 @@ export class StartHandler implements Handler {
     );
   };
 
-  private __registerSetup = async (): Promise<void> => {
-    await pool<RegisterContext>(
-      this.__contexts,
-      this.__registerTask,
-      this.__contexts.length,
+  private __registerSetup = async (
+    rave: Rave,
+    proxy: string,
+  ): Promise<void> => {
+    const mail = this.__nicemail.getMail();
+    const { stateId } = await rave.auth.sendMagicLink(mail);
+    display(SCREEN.locale.logs.mailCreated, [mail]);
+
+    const link = await getVerificationLink(this.__nicemail, mail);
+
+    if (!link) {
+      display(SCREEN.locale.errors.accountCreationFailed, [mail]);
+      return;
+    }
+
+    sendDelayedVerify(link);
+    await delay(6);
+    display(SCREEN.locale.logs.verifyChainPassed, [mail]);
+
+    const state = await rave.auth.checkRegisterState(stateId);
+    const credentials = await rave.auth.parseUserCredentials(
+      state.oauth!.idToken,
+      mail,
     );
+    const deviceId = generateToken();
+
+    rave.proxy = proxy;
+
+    try {
+      await rave.auth.mojoLogin(
+        mail,
+        credentials.objectId,
+        credentials.sessionToken,
+        this.__nickname!,
+        deviceId,
+      );
+      cacheSet({
+        email: mail,
+        token: credentials.sessionToken.slice(
+          2,
+          credentials.sessionToken.length,
+        ),
+        deviceId,
+      });
+      display(SCREEN.locale.logs.accountCreated, [mail]);
+    } catch (error) {
+      display(
+        `${SCREEN.locale.errors.accountCreationFailed} - ${(error as Error).message}`,
+        [mail],
+      );
+    } finally {
+      rave.offProxy();
+    }
   };
 
   async handle(): Promise<void> {
     SCREEN.displayLogo();
-    initCache();
-    if (!(await this.__torSetup())) return;
+    this.__nickname = await buildInput(
+      SCREEN.locale.enters.enterAccountsNickname,
+    );
 
-    await this.__mailSetup();
+    initCache();
+    const rave = new Rave();
+
+    if (!(await this.__torSetup())) return;
+    await this.__nicemail.authorize();
 
     while (true) {
       await this.__proxySetup();
-      if (this.__proxies.length >= this.__contexts.length) break;
+      SCREEN.displayLogo();
+      display(
+        SCREEN.locale.logs.proxiesConnected.replace(
+          '%s',
+          this.__proxies.length.toString(),
+        ),
+      );
+
+      for (const proxy of this.__proxies) {
+        await this.__registerSetup(rave, proxy);
+      }
+      await delay(3);
     }
-
-    SCREEN.displayLogo();
-    display(
-      SCREEN.locale.logs.proxiesConnected.replace(
-        '%s',
-        this.__proxies.length.toString(),
-      ),
-    );
-
-    await this.__registerSetup();
-    this.__contexts = [];
   }
 }

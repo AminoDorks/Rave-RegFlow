@@ -9,9 +9,7 @@ import { makeIfIsnt } from './utils/loaders';
 // Simple
 
 export const MAX_PROXIES_BATCH = 35;
-export const MAX_MAILS_BATCH = 70;
-export const MAIL_ITERATIONS = 35;
-export const RATE_LIMIT_PER_IP = 2;
+export const LOCALHOST = '127.0.0.1';
 
 // Structures
 

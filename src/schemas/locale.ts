@@ -9,6 +9,7 @@ export const LocaleSchema = z.object({
     chooseLanguage: z.string(),
     enterTorPort: z.string(),
     enterTorPassword: z.string(),
+    enterAccountsNickname: z.string(),
   }),
   logs: z.object({
     cacheUpdated: z.string(),
@@ -17,6 +18,7 @@ export const LocaleSchema = z.object({
     newNym: z.string(),
     proxyConnected: z.string(),
     proxiesConnected: z.string(),
+    verifyChainPassed: z.string(),
     accountCreated: z.string(),
     taskRestarted: z.string(),
     noProxyAvailable: z.string(),

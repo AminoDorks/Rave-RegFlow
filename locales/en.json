@@ -5,7 +5,8 @@
     "chooseAction": "Choose an action:",
     "chooseLanguage": "Choose a language:",
     "enterTorPort": "Enter Tor port:",
-    "enterTorPassword": "Enter Tor password:"
+    "enterTorPassword": "Enter Tor password:",
+    "enterAccountsNickname": "Enter accounts nickname:"
   },
   "logs": {
     "cacheUpdated": "Cache updated with %s accounts",
@@ -14,6 +15,7 @@
     "newNym": "New Nym created",
     "proxyConnected": "Proxy connected",
     "proxiesConnected": "Total proxies connected: %s",
+    "verifyChainPassed": "Verification chain passed",
     "taskRestarted": "Proxy timeout. Task restarted",
     "noProxyAvailable": "No available proxies"
   },
