@@ -59,6 +59,11 @@
         "name": "Russian",
         "description": "Select Russian language",
         "value": "ru"
+      },
+      {
+        "name": "Ukrainian",
+        "description": "Select Ukrainian language",
+        "value": "ua"
       }
     ]
   }
