@@ -16,13 +16,15 @@
     "proxyConnected": "Proxy connected",
     "proxiesConnected": "Total proxies connected: %s",
     "verifyChainPassed": "Verification chain passed",
+    "accountCreated": "Accounts was created",
     "taskRestarted": "Proxy timeout. Task restarted",
     "noProxyAvailable": "No available proxies"
   },
   "errors": {
     "torConnectionFailed": "Failed to connect to Tor",
     "mailCreationFailed": "Failed to create mail",
-    "proxyConnectionFailed": "Failed to connect to proxy"
+    "proxyConnectionFailed": "Failed to connect to proxy",
+    "accountCreationFailed": "Falied to make account"
   },
   "choices": {
     "main": [
