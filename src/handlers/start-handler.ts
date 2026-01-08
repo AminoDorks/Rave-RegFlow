@@ -7,17 +7,13 @@ import { display } from '../ui/screen';
 import { pool } from '../utils/tasks';
 import initCache, { cacheSet } from '../utils/cache';
 import { buildInput } from '../ui/builders';
+import { CONFIG, MAX_PROXIES_BATCH, SCREEN, LOCALHOST } from '../constants';
 import {
-  CONFIG,
-  MAX_PROXIES_BATCH,
-  PROXIES,
-  SCREEN,
-  LOCALHOST,
-} from '../constants';
-import {
+  configureTor,
   delay,
   getVerificationLink,
   sendDelayedVerify,
+  setTorPassword,
 } from '../utils/helpers';
 
 export class StartHandler implements Handler {
@@ -28,11 +24,16 @@ export class StartHandler implements Handler {
   private __tor?: Tor;
 
   private __torSetup = async (): Promise<Tor | undefined> => {
+    if (!CONFIG.torPassword) {
+      await setTorPassword();
+    }
+    await configureTor();
+
     try {
       this.__tor = new Tor({
         host: LOCALHOST,
-        port: CONFIG.torControlPort,
-        password: CONFIG.torControlPassword,
+        port: CONFIG.torPort,
+        password: CONFIG.torPassword,
       });
       await this.__tor.connect();
       display(SCREEN.locale.logs.torConnected);
@@ -52,7 +53,7 @@ export class StartHandler implements Handler {
     display(SCREEN.locale.logs.newNym);
 
     await pool<string>(
-      PROXIES,
+      CONFIG.proxies,
       async (proxy: string) => {
         const rave = new Rave();
         rave.proxy = proxy;

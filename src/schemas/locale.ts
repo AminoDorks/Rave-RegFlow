@@ -10,6 +10,7 @@ export const LocaleSchema = z.object({
     enterTorPort: z.string(),
     enterTorPassword: z.string(),
     enterAccountsNickname: z.string(),
+    enterTorPath: z.string(),
   }),
   logs: z.object({
     cacheUpdated: z.string(),
@@ -22,12 +23,14 @@ export const LocaleSchema = z.object({
     accountCreated: z.string(),
     taskRestarted: z.string(),
     noProxyAvailable: z.string(),
+    torConfigured: z.string(),
   }),
   errors: z.object({
     torConnectionFailed: z.string(),
     mailCreationFailed: z.string(),
     proxyConnectionFailed: z.string(),
     accountCreationFailed: z.string(),
+    couldntFindTorrc: z.string(),
   }),
   choices: z.object({
     main: z.array(ChoiceSchema),

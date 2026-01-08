@@ -1,12 +1,13 @@
 {
-  "logo": "ICAgX18gICAgICAgICAgICAgICAgICAgICBfXyAgICAgICAgICAgICAgX19fIF8gICAgICAgICAgICAgICAKICAvX19cIF9fIF9fXyAgIF9fX19fICAgIC9fX1wgX19fICBfXyBfICAvIF9fXCB8IF9fX19fICAgICAgX18KIC8gXC8vLyBfYCBcIFwgLyAvIF8gXCAgLyBcLy8vIF8gXC8gX2AgfC8gX1wgfCB8LyBfIFwgXCAvXCAvIC8KLyBfICBcIChffCB8XCBWIC8gIF9fLyAvIF8gIFwgIF9fLyAoX3wgLyAvICAgfCB8IChfKSBcIFYgIFYgLyAKXC8gXF8vXF9fLF98IFxfLyBcX19ffCBcLyBcXy9cX19ffFxfXywgXC8gICAgfF98XF9fXy8gXF8vXF8vICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHxfX18vICAgICAgICAgICAgICAgICAgICAgICA=",
+  "logo": "Ll9fX19fXyAgLl9fX19fXyAgLl9fXyAgICAgLl9fX19fX18uX19fX19fICAuX19fX19fXy5fX19fXyAgCjogX18gICBcIDogICAgICBcIHwgICB8X19fIDogLl9fX18vOiBfXyAgIFwgOiAuX19fXy86XyBfX19cIAp8ICBcX19fX3x8ICAgLiAgIHx8ICAgfCAgIHx8IDogXy9cIHwgIFxfX19ffHwgOiBfL1wgfCAgIHxfX18KfCAgIDogIFwgfCAgIDogICB8fCAgIDogICB8fCAgIC8gIFx8ICAgOiAgXCB8ICAgLyAgXHwgICAvICB8CnwgICB8X19fXHxfX198ICAgfCBcICAgICAgfHxfLjogX18vfCAgIHxfX19cfF8uOiBfXy98LiBfXyAgfAp8X19ffCAgICAgICAgfF9fX3wgIFxfX19fLyAgICA6LyAgIHxfX198ICAgICAgIDovICAgIDovIHwuIHwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA6ICAgOi8g",
   "logoCredit": "       Script by celt\n",
   "enters": {
     "chooseAction": "Choose an action:",
     "chooseLanguage": "Choose a language:",
     "enterTorPort": "Enter Tor port:",
     "enterTorPassword": "Enter Tor password:",
-    "enterAccountsNickname": "Enter accounts nickname:"
+    "enterAccountsNickname": "Enter accounts nickname:",
+    "enterTorPath": "Enter torrc path (e.g., C:/Tor/torrc):"
   },
   "logs": {
     "cacheUpdated": "Cache updated with %s accounts",
@@ -18,9 +19,11 @@
     "verifyChainPassed": "Verification chain passed",
     "accountCreated": "Accounts was created",
     "taskRestarted": "Proxy timeout. Task restarted",
-    "noProxyAvailable": "No available proxies"
+    "noProxyAvailable": "No available proxies",
+    "torConfigured": "Tor configured"
   },
   "errors": {
+    "couldntFindTorrc": "Could not find torrc",
     "torConnectionFailed": "Failed to connect to Tor",
     "mailCreationFailed": "Failed to create mail",
     "proxyConnectionFailed": "Failed to connect to proxy",
@@ -61,11 +64,6 @@
         "name": "Russian",
         "description": "Select Russian language",
         "value": "ru"
-      },
-      {
-        "name": "Ukrainian",
-        "description": "Select Ukrainian language",
-        "value": "ua"
       }
     ]
   }

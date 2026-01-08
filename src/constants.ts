@@ -1,3 +1,5 @@
+import { homedir } from 'os';
+
 import { SettingsHandler } from './handlers/settings-handler';
 import { StartHandler } from './handlers/start-handler';
 import { Handler } from './interfaces/handler';
@@ -6,12 +8,22 @@ import { Screen } from './ui/screen';
 import { readSplitLines } from './utils/helpers';
 import { makeIfIsnt } from './utils/loaders';
 
-// Simple
-
 export const MAX_PROXIES_BATCH = 35;
 export const LOCALHOST = '127.0.0.1';
 
-// Structures
+export const TORRC_PATHS = {
+  win: [
+    'C:/Tor Browser/Browser/TorBrowser/Data/Tor/torrc',
+    'C:/Users/user/Desktop/Tor Browser/Browser/TorBrowser/Data/Tor/torrc',
+  ],
+  unix: [
+    '/etc/tor/torrc',
+    '/usr/local/etc/tor/torrc',
+    '/etc/torrc',
+    `${homedir()}/.tor/torrc`,
+    `${homedir()}/torrc`,
+  ],
+};
 
 export const MAIL_URLS = {
   nicemail: 'https://nicemail.cc/ru',
@@ -21,14 +33,15 @@ export const MAIL_URLS = {
 export const PATHS = {
   config: '../config.json',
   cache: '../cache.json',
-  proxies: '../proxies.txt',
   locales: '../locales/%s.json',
 };
 
 const DEFAULT_CONFIG: Config = {
   locale: 'en',
-  torControlPort: 9251,
-  torControlPassword: '',
+  torPort: 9251,
+  torPassword: '',
+  customPath: '',
+  proxies: [],
 };
 
 export const COLORS = {
@@ -50,8 +63,6 @@ export const CUSTOM_THEME = {
   },
 };
 
-// Instances
-
 export let CONFIG = makeIfIsnt<Config>(
   PATHS.config,
   DEFAULT_CONFIG,
@@ -64,7 +75,3 @@ export const HANDLERS: Record<string, Handler> = {
   start: new StartHandler(),
   settings: new SettingsHandler(),
 };
-
-// Other
-
-export const PROXIES = readSplitLines(PATHS.proxies);

@@ -1,6 +1,7 @@
 import { CONFIG, PATHS, SCREEN } from '../constants';
 import { Handler } from '../interfaces/handler';
-import { buildInput, buildSelect, numericFilter } from '../ui/builders';
+import { buildSelect } from '../ui/builders';
+import { setTorPassword } from '../utils/helpers';
 import { save } from '../utils/loaders';
 
 export class SettingsHandler implements Handler {
@@ -16,18 +17,7 @@ export class SettingsHandler implements Handler {
   };
 
   private __torCallback = async () => {
-    const torPort = await buildInput(SCREEN.locale.enters.enterTorPort, {
-      defaultAnswer: CONFIG.torControlPort.toString(),
-      filter: numericFilter,
-    });
-    const torPassword = await buildInput(
-      SCREEN.locale.enters.enterTorPassword,
-      { defaultAnswer: CONFIG.torControlPassword },
-    );
-
-    CONFIG.torControlPort = Number(torPort);
-    CONFIG.torControlPassword = torPassword;
-    save(PATHS.config, CONFIG);
+    await setTorPassword();
   };
 
   async handle(): Promise<void> {
