@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@inquirer/prompts": "^8.1.0",
+    "@types/node": "^25.0.3",
     "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "nicemail-ts": "^1.0.2",
