@@ -15,7 +15,7 @@
     "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "nicemail-ts": "^1.0.2",
-    "ravejs": "^1.11.9",
+    "ravejs": "^1.16.12",
     "tor-control-ts": "^1.0.0",
     "undici": "^7.16.0",
     "zod": "^4.2.1"
