@@ -48,7 +48,7 @@ export const sendDelayedVerify = async (link: string) => {
   } catch {}
 };
 
-const findTorrc = (customPath?: string): string | undefined => {
+const findTorrc = async (customPath?: string): Promise<string | undefined> => {
   let torrcContent: string | undefined;
 
   const paths = customPath
@@ -57,6 +57,11 @@ const findTorrc = (customPath?: string): string | undefined => {
       ? TORRC_PATHS.win
       : TORRC_PATHS.unix;
   const validPaths = paths.filter((path) => existsSync(path));
+
+  if (!validPaths.length) {
+    validPaths.push(await buildInput(SCREEN.locale.enters.enterTorPath));
+  }
+
   CONFIG.customPath = validPaths[0];
   save(PATHS.config, CONFIG);
 
@@ -83,9 +88,9 @@ export const configureTor = async () => {
   let torrc;
 
   if (CONFIG.customPath) {
-    torrc = findTorrc(CONFIG.customPath);
+    torrc = await findTorrc(CONFIG.customPath);
   } else {
-    torrc = findTorrc();
+    torrc = await findTorrc();
   }
 
   if (!torrc) {
