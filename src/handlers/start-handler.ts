@@ -6,7 +6,7 @@ import { Handler } from '../interfaces/handler';
 import { display } from '../ui/screen';
 import { pool } from '../utils/tasks';
 import initCache, { cacheSet } from '../utils/cache';
-import { buildInput } from '../ui/builders';
+import { buildInput, buildSelect } from '../ui/builders';
 import { CONFIG, MAX_PROXIES_BATCH, SCREEN, LOCALHOST } from '../constants';
 import {
   configureTor,
@@ -15,12 +15,12 @@ import {
   sendDelayedVerify,
   setTorPassword,
 } from '../utils/helpers';
+import { Languages } from 'ravejs/dist/schemas';
 
 export class StartHandler implements Handler {
   private __nicemail: NiceMail = new NiceMail();
   private __proxies: string[] = [];
 
-  private __nickname?: string;
   private __tor?: Tor;
 
   private __torSetup = async (): Promise<Tor | undefined> => {
@@ -75,11 +75,13 @@ export class StartHandler implements Handler {
   private __registerSetup = async (
     rave: Rave,
     proxy: string,
+    nickname: string,
+    language: Languages,
   ): Promise<void> => {
     const mail = this.__nicemail.getMail();
 
     try {
-      const { stateId } = await rave.auth.sendMagicLink(mail);
+      const { stateId } = await rave.auth.sendMagicLink(mail, language);
       display(SCREEN.locale.logs.mailCreated, [mail]);
 
       const link = await getVerificationLink(this.__nicemail, mail);
@@ -106,8 +108,9 @@ export class StartHandler implements Handler {
         mail,
         credentials.objectId,
         credentials.sessionToken,
-        this.__nickname!,
+        nickname,
         deviceId,
+        language,
       );
       cacheSet({
         email: mail,
@@ -130,8 +133,12 @@ export class StartHandler implements Handler {
 
   async handle(): Promise<void> {
     SCREEN.displayLogo();
-    this.__nickname = await buildInput(
+    const nickname = await buildInput(
       SCREEN.locale.enters.enterAccountsNickname,
+    );
+    const language = await buildSelect(
+      SCREEN.locale.enters.chooseAccountsLanguage,
+      SCREEN.locale.choices.locales,
     );
 
     initCache();
@@ -151,7 +158,12 @@ export class StartHandler implements Handler {
       );
 
       for (const proxy of this.__proxies) {
-        await this.__registerSetup(rave, proxy);
+        await this.__registerSetup(
+          rave,
+          proxy,
+          nickname,
+          language as Languages,
+        );
       }
       await delay(3);
     }

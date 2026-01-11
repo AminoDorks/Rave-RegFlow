@@ -11,6 +11,7 @@ export const LocaleSchema = z.object({
     enterTorPassword: z.string(),
     enterAccountsNickname: z.string(),
     enterTorPath: z.string(),
+    chooseAccountsLanguage: z.string(),
   }),
   logs: z.object({
     cacheUpdated: z.string(),
@@ -36,6 +37,7 @@ export const LocaleSchema = z.object({
     main: z.array(ChoiceSchema),
     settings: z.array(ChoiceSchema),
     languages: z.array(ChoiceSchema),
+    locales: z.array(ChoiceSchema),
   }),
 });
 

@@ -5,7 +5,6 @@ import { StartHandler } from './handlers/start-handler';
 import { Handler } from './interfaces/handler';
 import { Config, ConfigSchema } from './schemas/config';
 import { Screen } from './ui/screen';
-import { readSplitLines } from './utils/helpers';
 import { makeIfIsnt } from './utils/loaders';
 
 export const MAX_PROXIES_BATCH = 35;

@@ -7,7 +7,8 @@
     "enterTorPort": "Введите порт Tor:",
     "enterTorPassword": "Введите пароль Tor:",
     "enterAccountsNickname": "Введите никнейм аккаунтов:",
-    "enterTorPath": "Введите путь к torrc (например, C:/Tor/torrc):"
+    "enterTorPath": "Введите путь к torrc (например, C:/Tor/torrc):",
+    "chooseAccountsLanguage": "Выберите язык аккаунтов:"
   },
   "logs": {
     "cacheUpdated": "Кэш обновлен с %s аккаунтами",
@@ -64,6 +65,33 @@
         "name": "Русский",
         "description": "Выберите русский язык",
         "value": "ru"
+      }
+    ],
+    "locales": [
+      {
+        "name": "Английский",
+        "description": "Английский язык",
+        "value": "en"
+      },
+      {
+        "name": "Русский",
+        "description": "Русский язык",
+        "value": "ru"
+      },
+      {
+        "name": "Арабский",
+        "description": "Арабский язык",
+        "value": "ar"
+      },
+      {
+        "name": "Испанский",
+        "description": "Испанский язык",
+        "value": "es"
+      },
+      {
+        "name": "Французский",
+        "description": "Французский язык",
+        "value": "fr"
       }
     ]
   }

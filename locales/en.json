@@ -7,7 +7,8 @@
     "enterTorPort": "Enter Tor port:",
     "enterTorPassword": "Enter Tor password:",
     "enterAccountsNickname": "Enter accounts nickname:",
-    "enterTorPath": "Enter torrc path (e.g., C:/Tor/torrc):"
+    "enterTorPath": "Enter torrc path (e.g., C:/Tor/torrc):",
+    "chooseAccountsLanguage": "Choose accounts language:"
   },
   "logs": {
     "cacheUpdated": "Cache updated with %s accounts",
@@ -64,6 +65,33 @@
         "name": "Russian",
         "description": "Select Russian language",
         "value": "ru"
+      }
+    ],
+    "locales": [
+      {
+        "name": "English",
+        "description": "English language",
+        "value": "en"
+      },
+      {
+        "name": "Russian",
+        "description": "Russian language",
+        "value": "ru"
+      },
+      {
+        "name": "Arabic",
+        "description": "Arabic language",
+        "value": "ar"
+      },
+      {
+        "name": "Spanish",
+        "description": "Spanish language",
+        "value": "es"
+      },
+      {
+        "name": "French",
+        "description": "French language",
+        "value": "fr"
       }
     ]
   }
