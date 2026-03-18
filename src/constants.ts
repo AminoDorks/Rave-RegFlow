@@ -7,7 +7,7 @@ import { Config, ConfigSchema } from './schemas/config';
 import { Screen } from './ui/screen';
 import { makeIfIsnt } from './utils/loaders';
 
-export const MAX_PROXIES_BATCH = 35;
+export const MAX_PROXIES_BATCH = 25;
 export const LOCALHOST = '127.0.0.1';
 
 export const TORRC_PATHS = {

@@ -1,5 +1,5 @@
 import { generateToken, Rave } from 'ravejs';
-import { NiceMail } from 'nicemail-ts';
+import { MailPorary } from 'mailporary';
 import { Tor } from 'tor-control-ts';
 
 import { Handler } from '../interfaces/handler';
@@ -18,7 +18,7 @@ import {
 import { Languages } from 'ravejs/dist/schemas';
 
 export class StartHandler implements Handler {
-  private __nicemail: NiceMail = new NiceMail();
+  private __mailporary: MailPorary = new MailPorary();
   private __proxies: string[] = [];
 
   private __tor?: Tor;
@@ -78,13 +78,13 @@ export class StartHandler implements Handler {
     nickname: string,
     language: Languages,
   ): Promise<void> => {
-    const mail = this.__nicemail.getMail();
+    const mail = this.__mailporary.getMail();
 
     try {
       const { stateId } = await rave.auth.sendMagicLink(mail, language);
       display(SCREEN.locale.logs.mailCreated, [mail]);
 
-      const link = await getVerificationLink(this.__nicemail, mail);
+      const link = await getVerificationLink(this.__mailporary, mail);
 
       if (!link) {
         display(SCREEN.locale.errors.accountCreationFailed, [mail]);
@@ -145,7 +145,7 @@ export class StartHandler implements Handler {
     const rave = new Rave();
 
     if (!(await this.__torSetup())) return;
-    await this.__nicemail.authorize();
+    await this.__mailporary.authorize();
 
     while (true) {
       await this.__proxySetup();

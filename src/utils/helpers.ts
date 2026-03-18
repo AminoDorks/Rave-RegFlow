@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'fs';
 import { save } from './loaders';
-import { NiceMail } from 'nicemail-ts';
+import { MailPorary } from 'mailporary';
 import { CONFIG, PATHS, SCREEN, TORRC_PATHS } from '../constants';
 import { display } from '../ui/screen';
 import { buildInput } from '../ui/builders';
@@ -22,16 +22,16 @@ export const matchVerificationLink = (text: string): string =>
   text.match(/https?:\/\/api\.mojoauth\.com[^\s"']*/g)![0];
 
 export const getVerificationLink = async (
-  nicemail: NiceMail,
+  mailporary: MailPorary,
   mail: string,
 ): Promise<string | undefined> => {
   let message: string | undefined;
 
   for (let i = 0; i < 10; i++) {
-    const messages = await nicemail.getInbox(mail);
+    const messages = await mailporary.getInbox(mail);
 
     if (messages.length) {
-      message = (await nicemail.getMessage(mail, messages[0].id)).body.text;
+      message = (await mailporary.getMessage(mail, messages[0].id)).body.text;
       break;
     }
     await delay(1);
